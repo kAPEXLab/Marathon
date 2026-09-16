@@ -1,12 +1,176 @@
----
-layout: page
-title: Home
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Assessment Repository</title>
 
-# Programming Assessment
+    https://cdn.jsdelivr.net/npm/marked/marked.min.jsscript>
 
-## Available Questions
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-* docs/set1_q1.md
-* docs/set1_q2.md
-* docs/set1_q3.md
+        body {
+            margin: 0;
+            font-family: Segoe UI, Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .question-link {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .question-link:hover {
+            background: #374151;
+        }
+
+        .question-link.active {
+            background: #2563eb;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        .welcome {
+            text-align: center;
+            margin-top: 100px;
+            color: #666;
+        }
+
+        pre {
+            background: #f3f4f6;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 5px;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        blockquote {
+            border-left: 4px solid #2563eb;
+            margin-left: 0;
+            padding-left: 15px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Assessment Questions</h2>
+    <div id="menu"></div>
+</div>
+
+<div class="content">
+    <div id="content">
+        <div class="welcome">
+            <h1>Programming Assessment Repository</h1>
+            <p>Select a question from the left panel.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+
+async function loadQuestion(file, clickedLink)
+{
+    try
+    {
+        document
+            .querySelectorAll('.question-link')
+            .forEach(x => x.classList.remove('active'));
+
+        clickedLink.classList.add('active');
+
+        const response = await fetch(file);
+
+        if (!response.ok)
+        {
+            throw new Error("File not found");
+        }
+
+        const markdown = await response.text();
+
+        document.getElementById('content').innerHTML =
+            marked.parse(markdown);
+    }
+    catch(error)
+    {
+        document.getElementById('content').innerHTML =
+            `<h2>Error</h2>
+             <p>Unable to load ${file}</p>`;
+    }
+}
+
+async function buildMenu()
+{
+    const response = await fetch('questions.json');
+
+    const questions = await response.json();
+
+    const menu = document.getElementById('menu');
+
+    questions.forEach(question =>
+    {
+        const link = document.createElement('a');
+
+        link.className = 'question-link';
+
+        link.textContent = question.title;
+
+        link.onclick = () =>
+            loadQuestion(question.file, link);
+
+        menu.appendChild(link);
+    });
+}
+
+buildMenu();
+
+</script>
+
+</body>
+</html>
