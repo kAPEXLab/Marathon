@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marathon</title>
+
+    https://cdn.jsdelivr.net/npm/marked/marked.min.jsscript>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+        }
+
+        .question-link {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .question-link:hover {
+            background: #374151;
+        }
+
+        .question-link.active {
+            background: #2563eb;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Assessment Questions</h2>
+        <div id="menu">Loading...</div>
+    </div>
+
+    <div class="content" id="content">
+        <h1>Marathon Assessment Repository</h1>
+        <p>Select a question from the left menu.</p>
+    </div>
+
+    <script>
+
+        async function loadQuestion(file, element) {
+
+            document.querySelectorAll(".question-link")
+                .forEach(x => x.classList.remove("active"));
+
+            element.classList.add("active");
+
+            try {
+
+                const response = await fetch(file);
+
+                if (!response.ok) {
+                    throw new Error("Cannot load " + file);
+                }
+
+                const markdown = await response.text();
+
+                document.getElementById("content").innerHTML =
+                    marked.parse(markdown);
+
+            }
+            catch (err) {
+
+                document.getElementById("content").innerHTML =
+                    '<div class="error">' +
+                    err.message +
+                    '</div>';
+            }
+        }
+
+        async function buildMenu() {
+
+            try {
+
+                const response =
+                    await fetch("questions.json");
+
+                if (!response.ok) {
+                    throw new Error(
+                        "questions.json not found"
+                    );
+                }
+
+                const questions =
+                    await response.json();
+
+                const menu =
+                    document.getElementById("menu");
+
+                menu.innerHTML = "";
+
+                questions.forEach(q => {
+
+                    const link =
+                        document.createElement("a");
+
+                    link.href = "#";
+
+                    link.className =
+                        "question-link";
+
+                    link.innerText =
+                        q.title;
+
+                    link.onclick = function (e) {
+
+                        e.preventDefault();
+
+                        loadQuestion(
+                            q.file,
+                            link
+                        );
+                    };
+
+                    menu.appendChild(link);
+                });
+
+            }
+            catch (err) {
+
+                document.getElementById("menu").innerHTML =
+                    '<div class="error">' +
+                    err.message +
+                    '</div>';
+            }
+        }
+
+        buildMenu();
+
+    </script>
+
+</body>
+
+</html>
