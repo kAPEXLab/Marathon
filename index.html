@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marathon</title>
 
-    <script src="https://cdn.jsdelivr.d/marked.min.jsscript>
+    https://cdn.jsdelivr.net/npm/marked/marked.min.jsscript>
 
     <style>
         * {
@@ -20,7 +21,7 @@
         }
 
         .sidebar {
-            width: 300px;
+            width: 320px;
             background: #1f2937;
             color: white;
             padding: 20px;
@@ -29,17 +30,16 @@
 
         .sidebar h2 {
             margin-top: 0;
-            font-size: 22px;
         }
 
         .question-link {
             display: block;
-            margin: 8px 0;
             padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
 
         .question-link:hover {
@@ -52,22 +52,15 @@
 
         .content {
             flex: 1;
+            padding: 30px;
             overflow-y: auto;
-            padding: 40px;
-            max-width: 1200px;
-        }
-
-        .welcome {
-            text-align: center;
-            margin-top: 100px;
-            color: #666;
         }
 
         pre {
             background: #f3f4f6;
-            padding: 15px;
+            padding: 10px;
             overflow-x: auto;
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         code {
@@ -79,98 +72,125 @@
             width: 100%;
         }
 
-        table, th, td {
+        table,
+        th,
+        td {
             border: 1px solid #ccc;
         }
 
-        th, td {
+        th,
+        td {
             padding: 8px;
-            text-align: left;
         }
 
-        blockquote {
-            border-left: 4px solid #2563eb;
-            margin-left: 0;
-            padding-left: 15px;
-            color: #555;
+        .error {
+            color: red;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-    <h2>Assessment Questions</h2>
-    <div id="menu"></div>
-</div>
-
-<div class="content">
-    <div id="content">
-        <div class="welcome">
-            <h1>Programming Assessment Repository</h1>
-            <p>Select a question from the left panel.</p>
-        </div>
+    <div class="sidebar">
+        <h2>Assessment Questions</h2>
+        <div id="menu"></div>
     </div>
-</div>
 
-<script>
+    <div class="content" id="content">
+        <h1>Marathon Assessment Repository</h1>
+        <p>Select a question from the left menu.</p>
+    </div>
 
-async function loadQuestion(file, clickedLink)
-{
-    try
-    {
-        document
-            .querySelectorAll('.question-link')
-            .forEach(x => x.classList.remove('active'));
+    <script>
 
-        clickedLink.classList.add('active');
+        async function loadQuestion(file, clickedLink) {
 
-        const response = await fetch(file);
+            try {
 
-        if (!response.ok)
-        {
-            throw new Error("File not found");
+                document
+                    .querySelectorAll('.question-link')
+                    .forEach(x => x.classList.remove('active'));
+
+                clickedLink.classList.add('active');
+
+                const response = await fetch(file);
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Unable to fetch ${file}. Status = ${response.status}`
+                    );
+                }
+
+                const markdown = await response.text();
+
+                document.getElementById('content').innerHTML =
+                    marked.parse(markdown);
+
+            }
+            catch (err) {
+
+                console.error(err);
+
+                document.getElementById('content').innerHTML =
+                    `<div class="error">
+                        Error loading file<br><br>
+                        ${err}
+                    </div>`;
+            }
         }
 
-        const markdown = await response.text();
+        async function buildMenu() {
 
-        document.getElementById('content').innerHTML =
-            marked.parse(markdown);
-    }
-    catch(error)
-    {
-        document.getElementById('content').innerHTML =
-            `<h2>Error</h2>
-             <p>Unable to load ${file}</p>`;
-    }
-}
+            try {
 
-async function buildMenu()
-{
-    const response = await fetch('questions.json');
+                const response =
+                    await fetch('questions.json');
 
-    const questions = await response.json();
+                if (!response.ok) {
+                    throw new Error(
+                        `Unable to load questions.json. Status=${response.status}`
+                    );
+                }
 
-    const menu = document.getElementById('menu');
+                const questions =
+                    await response.json();
 
-    questions.forEach(question =>
-    {
-        const link = document.createElement('a');
+                const menu =
+                    document.getElementById('menu');
 
-        link.className = 'question-link';
+                questions.forEach(question => {
 
-        link.textContent = question.title;
+                    const link =
+                        document.createElement('a');
 
-        link.onclick = () =>
-            loadQuestion(question.file, link);
+                    link.className =
+                        'question-link';
 
-        menu.appendChild(link);
-    });
-}
+                    link.textContent =
+                        question.title;
 
-buildMenu();
+                    link.href = '#';
 
-</script>
+                    link.onclick = function (e) {
 
-</body>
-</html>
+                        e.preventDefault();
+
+                        loadQuestion(
+                            question.file,
+                            link
+                        );
+                    };
+
+                    menu.appendChild(link);
+                });
+
+                console.log(
+                    "questions.json loaded successfully"
+                );
+            }
+            catch (err) {
+
+                console.error(err);
+
+              
