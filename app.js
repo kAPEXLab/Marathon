@@ -6,8 +6,6 @@ const state = {
 const elements = {
   list: document.querySelector("#document-list"),
   empty: document.querySelector("#empty-state"),
-  count: document.querySelector("#document-count"),
-  readerState: document.querySelector("#reader-state"),
   content: document.querySelector("#markdown-content")
 };
 
@@ -20,7 +18,6 @@ async function loadDocuments() {
       throw new Error("The document manifest is not valid.");
     }
     state.documents = documents;
-    elements.count.textContent = `${documents.length} ${documents.length === 1 ? "document" : "documents"}`;
     renderDocumentList();
 
     const requestedDocument = new URLSearchParams(window.location.search).get("doc");
@@ -28,7 +25,6 @@ async function loadDocuments() {
     if (firstDocument) await selectDocument(firstDocument.file, false);
   } catch (error) {
     elements.list.innerHTML = `<p class="error-message">${escapeHtml(error.message)}</p>`;
-    elements.count.textContent = "Unable to load library";
   }
 }
 
@@ -37,8 +33,7 @@ function renderDocumentList() {
 
   elements.list.innerHTML = visibleDocuments.map((document) => `
     <a class="document-link${document.file === state.selected ? " active" : ""}" href="?doc=${encodeURIComponent(document.file)}" data-file="${escapeHtml(document.file)}">
-      <strong>${escapeHtml(document.title)}</strong>
-      <small>${escapeHtml(document.file)}</small>
+      <strong>${escapeHtml(document.file)}</strong>
     </a>
   `).join("");
   elements.empty.hidden = visibleDocuments.length > 0;
@@ -56,8 +51,6 @@ async function selectDocument(file, updateUrl) {
   if (!documentEntry) return;
   state.selected = file;
   renderDocumentList();
-  elements.readerState.hidden = true;
-  elements.content.hidden = false;
   elements.content.innerHTML = '<p class="loading-list"><span class="spinner"></span>Loading document</p>';
 
   if (updateUrl) history.pushState({ file }, "", `?doc=${encodeURIComponent(file)}`);
