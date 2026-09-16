@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Coding Marathon Set 1 documentation">
+  <title>Coding Marathon | Set 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Coding Marathon home">
+        <span>
+          <strong>Coding Marathon</strong>
+          <small>Set 1 documentation</small>
+        </span>
+      </a>
+      <div class="header-note"><span class="status-dot"></span><span id="document-count">Loading documents...</span></div>
+    </header>
+
+    <main class="workspace">
+      <aside class="document-nav" aria-label="Documentation navigation">
+        <nav id="document-list" class="document-list" aria-label="Problems">
+          <div class="loading-list"><span class="spinner"></span>Loading library</div>
+        </nav>
+        <p id="empty-state" class="empty-state" hidden>No matching documents.</p>
+      </aside>
+
+      <section class="reader" aria-live="polite">
+        <div id="reader-state" class="reader-state">
+          <div class="state-icon">#</div>
+          <p class="eyebrow">Set 1 / Documentation</p>
+          <h2>Choose a problem to begin</h2>
+          <p>Select a document from the library to read the full challenge brief.</p>
+        </div>
+        <article id="markdown-content" class="markdown-content" hidden></article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
