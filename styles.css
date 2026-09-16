@@ -67,6 +67,14 @@ body {
 
 .reader { flex: 1; min-width: 0; min-height: calc(100vh - var(--header-h)); }
 .markdown-content { max-width: 980px; margin: 0 auto; padding: 24px; animation: appear .3s ease-out; }
+.markdown-content.markdown-body table { display: table; border-collapse: collapse; width: 100%; }
+.markdown-content.markdown-body th,
+.markdown-content.markdown-body td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; }
+.markdown-content.markdown-body th { background: #f6f8fa; font-weight: 600; }
+.markdown-content.markdown-body tr:nth-child(even) { background: #fbfcfd; }
+.markdown-content.markdown-body code { border: 1px solid #e5e7eb; border-radius: 5px; background: #f6f8fa; color: #24292f; }
+.markdown-content.markdown-body pre { border: 1px solid #d0d7de; border-radius: 6px; background: #f6f8fa; color: #24292f; }
+.markdown-content.markdown-body pre code { border: 0; background: transparent; color: inherit; }
 .error-message { margin: 50px; color: #943f2e; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
