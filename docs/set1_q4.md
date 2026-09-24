@@ -902,7 +902,7 @@ Total anomaly records: 3
 
 # 26. Supplied Test Cases
 
-The evaluator will provide multiple test-case folders.
+Test-case folders are available at [https://github.com/kAPEXLab/Marathon/blob/881638803e596b4000054503fb692dd6085aadd1/testcase.zip](https://github.com/kAPEXLab/Marathon/blob/881638803e596b4000054503fb692dd6085aadd1/testcase.zip).
 
 Each test-case folder may contain:
 
